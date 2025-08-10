@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Reference Include="0Harmony">
+        <HintPath>..\..\..\..\..\.local\share\Steam\steamapps\common\Resonite\rml_libs\0Harmony-Net9.dll</HintPath>
+      </Reference>
+      <Reference Include="Awwdio">
+        <HintPath>..\..\..\..\..\.local\share\Steam\steamapps\common\Resonite\Awwdio.dll</HintPath>
+      </Reference>
+      <Reference Include="Elements.Assets">
+        <HintPath>..\..\..\..\..\.local\share\Steam\steamapps\common\Resonite\Elements.Assets.dll</HintPath>
+      </Reference>
+      <Reference Include="Elements.Core">
+        <HintPath>..\..\..\..\..\.local\share\Steam\steamapps\common\Resonite\Elements.Core.dll</HintPath>
+      </Reference>
+      <Reference Include="Elements.Data">
+        <HintPath>..\..\..\..\..\.local\share\Steam\steamapps\common\Resonite\Elements.Data.dll</HintPath>
+      </Reference>
+      <Reference Include="FrooxEngine">
+        <HintPath>..\..\..\..\..\.local\share\Steam\steamapps\common\Resonite\FrooxEngine.dll</HintPath>
+      </Reference>
+      <Reference Include="ResoniteModLoader">
+        <HintPath>..\..\..\..\..\.local\share\Steam\steamapps\common\Resonite\Libraries\ResoniteModLoader.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
+</Project>
