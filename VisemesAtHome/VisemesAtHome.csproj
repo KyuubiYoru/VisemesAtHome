@@ -4,30 +4,66 @@
         <TargetFramework>net9.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <RuntimeIdentifiers>linux-x64</RuntimeIdentifiers>
+    </PropertyGroup>
+
+    <PropertyGroup>
+      <ResoniteRoot Condition="'$(RESONITE_PATH)' != ''">$(RESONITE_PATH)</ResoniteRoot>
+      <ResoniteRoot Condition="'$(ResoniteRoot)' == ''">/home/kyuubi/.local/share/Steam/steamapps/common/Resonite</ResoniteRoot>
+      <ResoniteModsDir>$(ResoniteRoot)/rml_mods</ResoniteModsDir>
     </PropertyGroup>
 
     <ItemGroup>
       <Reference Include="0Harmony">
-        <HintPath>..\..\..\..\..\.local\share\Steam\steamapps\common\Resonite\rml_libs\0Harmony-Net9.dll</HintPath>
+        <HintPath>$(ResoniteRoot)\rml_libs\0Harmony.dll</HintPath>
       </Reference>
       <Reference Include="Awwdio">
-        <HintPath>..\..\..\..\..\.local\share\Steam\steamapps\common\Resonite\Awwdio.dll</HintPath>
+        <HintPath>$(ResoniteRoot)\Awwdio.dll</HintPath>
       </Reference>
       <Reference Include="Elements.Assets">
-        <HintPath>..\..\..\..\..\.local\share\Steam\steamapps\common\Resonite\Elements.Assets.dll</HintPath>
+        <HintPath>$(ResoniteRoot)\Elements.Assets.dll</HintPath>
       </Reference>
       <Reference Include="Elements.Core">
-        <HintPath>..\..\..\..\..\.local\share\Steam\steamapps\common\Resonite\Elements.Core.dll</HintPath>
+        <HintPath>$(ResoniteRoot)\Elements.Core.dll</HintPath>
       </Reference>
       <Reference Include="Elements.Data">
-        <HintPath>..\..\..\..\..\.local\share\Steam\steamapps\common\Resonite\Elements.Data.dll</HintPath>
+        <HintPath>$(ResoniteRoot)\Elements.Data.dll</HintPath>
       </Reference>
       <Reference Include="FrooxEngine">
-        <HintPath>..\..\..\..\..\.local\share\Steam\steamapps\common\Resonite\FrooxEngine.dll</HintPath>
+        <HintPath>$(ResoniteRoot)\FrooxEngine.dll</HintPath>
       </Reference>
       <Reference Include="ResoniteModLoader">
-        <HintPath>..\..\..\..\..\.local\share\Steam\steamapps\common\Resonite\Libraries\ResoniteModLoader.dll</HintPath>
+        <HintPath>$(ResoniteRoot)\Libraries\ResoniteModLoader.dll</HintPath>
       </Reference>
     </ItemGroup>
+
+    <ItemGroup>
+      <!-- Use compat library for ONNX runtime; remove direct dependency from mod -->
+      <ProjectReference Include="../../inference/OpenLipSync.Inference/OpenLipSync.Inference/OpenLipSync.Inference.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Include="..\WorkReferences\VisemeAnalyzer\bf16.onnx">
+        <Link>Models\bf16.onnx</Link>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Include="..\WorkReferences\VisemeAnalyzer\fp32.onnx">
+        <Link>Models\fp32.onnx</Link>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
+    <!-- No direct native copy needed; compat DLL brings runtime -->
+
+    <!-- Auto-deploy build output to Resonite rml_mods -->
+    <Target Name="CopyToResoniteMods" AfterTargets="Build">
+      <Message Text="Copying VisemesAtHome.dll to $(ResoniteModsDir)" Importance="High" />
+      <MakeDir Directories="$(ResoniteModsDir)" />
+      <ItemGroup>
+        <_MainDll Include="$(TargetPath)" />
+      </ItemGroup>
+      <Copy SourceFiles="@(_MainDll)" DestinationFolder="$(ResoniteModsDir)" SkipUnchangedFiles="true" />
+    </Target>
 
 </Project>
