@@ -10,4 +10,4 @@ Download [VisemesAtHome.zip](https://github.com/KyuubiYoru/VisemesAtHome/release
 
 Requires: [OpenLipSync.Inference](https://github.com/KyuubiYoru/OpenLipSync) to build.
 
-Link: [ResoniteModLoader releases](https://github.com/resonite-modding-group/ResoniteModLoader/releases)
+[ResoniteModLoader releases](https://github.com/resonite-modding-group/ResoniteModLoader/releases)
