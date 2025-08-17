@@ -43,16 +43,6 @@
       <ProjectReference Include="../../inference/OpenLipSync.Inference/OpenLipSync.Inference/OpenLipSync.Inference.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <None Include="..\WorkReferences\VisemeAnalyzer\bf16.onnx">
-        <Link>Models\bf16.onnx</Link>
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
-      <None Include="..\WorkReferences\VisemeAnalyzer\fp32.onnx">
-        <Link>Models\fp32.onnx</Link>
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
-    </ItemGroup>
 
     <!-- No direct native copy needed; compat DLL brings runtime -->
 
