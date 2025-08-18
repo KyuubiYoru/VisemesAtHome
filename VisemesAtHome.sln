@@ -2,7 +2,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VisemesAtHome", "VisemesAtHome\VisemesAtHome.csproj", "{BB322A95-05E5-4F50-8E58-2F036078EB3D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenLipSync.Inference", "..\inference\OpenLipSync.Inference\OpenLipSync.Inference\OpenLipSync.Inference.csproj", "{9AC167D7-E98A-4FC8-8EDD-082A83018538}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenLipSync.Inference", "OpenLipSync\inference\OpenLipSync.Inference\OpenLipSync.Inference\OpenLipSync.Inference.csproj", "{9AC167D7-E98A-4FC8-8EDD-082A83018538}"
 EndProject
 Global
 				GlobalSection(SolutionConfigurationPlatforms) = preSolution

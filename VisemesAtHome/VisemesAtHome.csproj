@@ -15,8 +15,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Reference Include="0Harmony">
-        <HintPath>$(ResoniteRoot)\rml_libs\0Harmony.dll</HintPath>
+      <Reference Include="HarmonyLib">
+        <HintPath>$(ResoniteRoot)\rml_libs\0Harmony-Net9.dll</HintPath>
       </Reference>
       <Reference Include="Awwdio">
         <HintPath>$(ResoniteRoot)\Awwdio.dll</HintPath>
@@ -40,7 +40,7 @@
 
     <ItemGroup>
       <!-- Use compat library for ONNX runtime; remove direct dependency from mod -->
-      <ProjectReference Include="../../inference/OpenLipSync.Inference/OpenLipSync.Inference/OpenLipSync.Inference.csproj" />
+      <ProjectReference Include="../OpenLipSync/inference/OpenLipSync.Inference/OpenLipSync.Inference/OpenLipSync.Inference.csproj" />
     </ItemGroup>
 
 
