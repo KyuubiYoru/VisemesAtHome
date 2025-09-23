@@ -1,3 +1,5 @@
+## Archived because this mod is no longer needed.
+
 ## VisemesAtHome
 
 # Experimental
