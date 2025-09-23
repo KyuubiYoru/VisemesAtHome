@@ -52,45 +52,57 @@ internal static class VisemeAnalyzerPatches
         try { ___analysisContext?.Dispose(); } catch { /* ignore */ }
 
 
-        VahLog.Warn("Initializing OpenLipSync viseme analyzer");
-        var st = new AnalyzerState();
+        VahLog.Info("Initializing OpenLipSync viseme analyzer");
+        var analyzerState = new AnalyzerState();
 
         try
         {
             // Create new backend and interface (OVRLipSyncInterface handles initialization)
-            string candidate = string.IsNullOrWhiteSpace(ModelPathOverride) ? "rml_mods/model/model.onnx" : ModelPathOverride;
+            string modelPath = string.IsNullOrWhiteSpace(ModelPathOverride) ? "rml_mods/model/model.onnx" : ModelPathOverride;
             try
             {
-                string abs = Path.GetFullPath(candidate);
-                string cwd = Environment.CurrentDirectory;
-                VahLog.Info($"Looking for OpenLipSync model at '{candidate}' (cwd='{cwd}', abs='{abs}')");
+                string fullPath = Path.GetFullPath(modelPath);
+                string currentDirectory = Environment.CurrentDirectory;
+                VahLog.Info($"Looking for OpenLipSync model at '{modelPath}' (cwd='{currentDirectory}', abs='{fullPath}')");
             }
             catch { /* path resolution/logging best-effort */ }
-            Environment.SetEnvironmentVariable("OPENLIPSYNC_MODEL_PATH", candidate);
-
             int sampleRate = Engine.Current.AudioSystem.SampleRate; // Resonite audio sample rate, OpenLipSync will resample internally
             int bufferSamples = Engine.Current.AudioSystem.SimulationFrameSize; // Unused in practice, kept for interface signature stability
 
-            st.Backend = new OpenLipSyncBackend();
-            st.OvrInterface = new OVRLipSyncInterface(st.Backend, sampleRate, bufferSamples);
+            analyzerState.Backend = new OpenLipSyncBackend();
+            
+            analyzerState.Backend.DefaultModelPath = modelPath;
+            analyzerState.OvrInterface = new OVRLipSyncInterface(analyzerState.Backend, sampleRate, bufferSamples);
 
-            if (!st.OvrInterface.IsInitialized)
+            if (!analyzerState.OvrInterface.IsInitialized)
             {
-                VahLog.Error("Failed to initialize OpenLipSync backend/interface");
-                st.Dispose();
+                try
+                {
+                    var last = analyzerState.OvrInterface.GetLastError();
+                    if (!string.IsNullOrWhiteSpace(last))
+                    {
+                        VahLog.Error("Failed to initialize OpenLipSync backend/interface: " + last);
+                    }
+                    else
+                    {
+                        VahLog.Error("Failed to initialize OpenLipSync backend/interface");
+                    }
+                }
+                catch { VahLog.Error("Failed to initialize OpenLipSync backend/interface"); }
+                analyzerState.Dispose();
                 return;
             }
-            st.Context = new OVRLipSyncContext(st.OvrInterface);
-            if (!st.Context.IsInitialized)
+            analyzerState.Context = new OVRLipSyncContext(analyzerState.OvrInterface);
+            if (!analyzerState.Context.IsInitialized)
             {
                 VahLog.Error("Failed to create OVRLipSync context");
-                st.Dispose();
+                analyzerState.Dispose();
                 return;
             }
 
             // Create "fake" FrooxEngine OVRLipSyncContext to wrap ours from the VisemeAnalyzer’s perspective
             FrooxEngine.OVRLipSyncContext context = new(null);
-            State.Add(context, st);
+            State.Add(context, analyzerState);
             context.Update(___Smoothing);
             ___Smoothing.OnValueChange += (smoothing) => context.Update(smoothing);
             ___analysisContext = context;
@@ -100,7 +112,7 @@ internal static class VisemeAnalyzerPatches
         catch (Exception ex)
         {
             VahLog.Error("OpenLipSync analysis failed: " + ex.Message);
-            st.Dispose();
+            analyzerState.Dispose();
         }
     }
 
@@ -109,11 +121,11 @@ internal static class VisemeAnalyzerPatches
     public static bool Constructor_Prefix(FrooxEngine.OVRLipSyncInterface ovrLipSync, ref FrooxEngine.OVRLipSyncContext __instance)
     {
         if (ovrLipSync != null) {
-            // Actually a real instanciation, let it do its job
+            // Use original constructor for real OVR instance
             return true;
         }
 
-        // Set context to non-zero value so that the VizemeAnalyzer understands it’s initialized
+        // Set non-zero handle so VisemeAnalyzer treats it as initialized
         AccessTools.FieldRefAccess<FrooxEngine.OVRLipSyncContext, uint>("context")(__instance) = 1;
         return false;
     }
@@ -124,7 +136,7 @@ internal static class VisemeAnalyzerPatches
     {
         if (!State.TryGetValue(__instance, out var st))
         {
-            // Actually an OVRLipSync instanciation, let it do its job
+            // Use original Dispose
             return true;
         }
 
@@ -138,7 +150,7 @@ internal static class VisemeAnalyzerPatches
     public static bool Update_Prefix(float smoothing, FrooxEngine.OVRLipSyncContext __instance) {
         if (!State.TryGetValue(__instance, out var st))
         {
-            // Actually an OVRLipSync instanciation, let it do its job
+            // Use original Update
             return true;
         }
 
@@ -154,7 +166,7 @@ internal static class VisemeAnalyzerPatches
     {
         if (!State.TryGetValue(__instance, out var st))
         {
-            // Actually an OVRLipSync instanciation, let it do its job
+            // Use original Analyze
             return true;
         }
 
@@ -174,8 +186,7 @@ internal static class VisemeAnalyzerPatches
         {
             st.Context.Analyze(audioData, analysis, onDone);
 
-            // Model does not support Laughter; force zero for index 15.
-            // if (analysis.Length > 15) analysis[15] = 0f;
+            // Model does not support laughter (index 15)
         }
         catch (Exception ex)
         {

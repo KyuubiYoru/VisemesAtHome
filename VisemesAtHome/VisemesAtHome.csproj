@@ -17,6 +17,7 @@
     <ItemGroup>
       <Reference Include="HarmonyLib">
         <HintPath>$(ResoniteRoot)\rml_libs\0Harmony-Net9.dll</HintPath>
+        <HintPath>$(ResoniteRoot)\rml_libs\0Harmony.dll</HintPath>
       </Reference>
       <Reference Include="Awwdio">
         <HintPath>$(ResoniteRoot)\Awwdio.dll</HintPath>
@@ -33,14 +34,12 @@
       <Reference Include="FrooxEngine">
         <HintPath>$(ResoniteRoot)\FrooxEngine.dll</HintPath>
       </Reference>
+      <Reference Include="OpenLipSync.Inference">
+        <HintPath>..\..\inference\OpenLipSync.Inference\OpenLipSync.Inference\bin\Release\net9.0\OpenLipSync.Inference.dll</HintPath>
+      </Reference>
       <Reference Include="ResoniteModLoader">
         <HintPath>$(ResoniteRoot)\Libraries\ResoniteModLoader.dll</HintPath>
       </Reference>
-    </ItemGroup>
-
-    <ItemGroup>
-      <!-- Use compat library for ONNX runtime; remove direct dependency from mod -->
-      <ProjectReference Include="../OpenLipSync/inference/OpenLipSync.Inference/OpenLipSync.Inference/OpenLipSync.Inference.csproj" />
     </ItemGroup>
 
 
